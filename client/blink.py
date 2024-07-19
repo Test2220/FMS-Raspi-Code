@@ -6,6 +6,6 @@ GPIO.setup(8, GPIO.OUT, initial=GPIO.LOW) # Set pin 8 to be an output pin and se
 GPIO.setup(10, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 while True:
     if GPIO.input(10) == GPIO.HIGH:
-        GPIO.output(10, GPIO.HIGH)
+        GPIO.output(8, GPIO.HIGH)
     else:
-        GPIO.output(10, GPIO.LOW)
+        GPIO.output(8, GPIO.LOW)
