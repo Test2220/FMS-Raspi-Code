@@ -56,7 +56,7 @@ def send_config(mac):
             exists = os.path.exists(config["device_config"][deviceData[mac]["location"]])
             if not exists:
                 return "Device config not found"
-            device_config = open(config["device_config"][deviceData[mac]["location"]])
+            device_config = json.load(open(config["device_config"][deviceData[mac]["location"]]))
             return device_config
         else:
             return "Device config not set"
