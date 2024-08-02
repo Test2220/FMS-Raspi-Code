@@ -7,7 +7,8 @@
         "http_port_slave": 8007
     },
 
-    "server_state": {
-        "ip_command": ""
+    "device_config": {
+        "Red": "pin-config.json",
+        "Blue": "pin-config.json"
     }
 }
