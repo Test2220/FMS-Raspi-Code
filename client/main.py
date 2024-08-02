@@ -16,10 +16,8 @@ input_proc = os.fork()
 
 if input_proc > 0:
     while True:
-        GPIO.output(16, GPIO.HIGH)
-        time.sleep(1)
-        GPIO.output(16, GPIO.LOW)
-        time.sleep(1)
+        print(f"I am child process with PID {os.getpid()}")
+        time.sleep(10)
     exit()
 
 # output_proc = os.fork()
@@ -33,4 +31,8 @@ if input_proc > 0:
 #     exit()
 
 # wait for child processes to finish
-os.waitpid(input_proc, 0)
+# os.waitpid(input_proc, 0)
+
+while True:
+        print(f"I am parent process with PID {os.getpid()}")
+        time.sleep(10)
