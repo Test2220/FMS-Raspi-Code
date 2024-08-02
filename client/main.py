@@ -16,14 +16,20 @@ input_proc = os.fork()
 
 if input_proc == 0:
     while True:
-        print(f"I am child process with PID {os.getpid()}")
+        GPIO.output(16, GPIO.HIGH)
+        time.sleep(1)
+        GPIO.output(16, GPIO.LOW)
+        time.sleep(1)
     exit()
 
 output_proc = os.fork()
 
 if output_proc == 0:
     while True:
-        print(f"I am child process with PID {os.getpid()}")
+        GPIO.output(32, GPIO.HIGH)
+        time.sleep(1)
+        GPIO.output(32, GPIO.LOW)
+        time.sleep(1)
     exit()
 
 while True:
