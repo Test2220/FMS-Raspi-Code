@@ -16,17 +16,19 @@ if input_proc > 0:
     while True:
         GPIO.output(16, GPIO.HIGH)
         time.sleep(1)
-        GPIO.output(32, GPIO.LOW)
+        GPIO.output(16, GPIO.LOW)
         time.sleep(1)
+    exit()
 
 output_proc = os.fork()
 
 if output_proc > 0:
     while True:
-        GPIO.output(16, GPIO.HIGH)
+        GPIO.output(32, GPIO.HIGH)
         time.sleep(1)
         GPIO.output(32, GPIO.LOW)
         time.sleep(1)
+    exit()
 
 # wait for child processes to finish
 os.waitpid(input_proc, 0)
