@@ -16,6 +16,7 @@ input_proc = os.fork()
 
 if input_proc == 0:
     while True:
+        time.sleep(1)
         GPIO.output(16, GPIO.HIGH)
         time.sleep(1)
         GPIO.output(16, GPIO.LOW)
