@@ -2,6 +2,8 @@ import os
 import RPi.GPIO as GPIO
 import time
 
+GPIO.cleanup()
+
 GPIO.setmode(GPIO.BOARD)
 
 # setup pin 16 as an output pin
