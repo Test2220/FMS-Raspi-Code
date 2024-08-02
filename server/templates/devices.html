@@ -61,9 +61,51 @@
                         const row = table.insertRow();
                         row.insertCell().textContent = device
                         row.insertCell().textContent = data[device].name
-                        row.insertCell().textContent = data[device].location
+                        row.insertCell().id = 'locationCell' + device;
                         row.insertCell().textContent = data[device].status
                         row.insertCell().textContent = data[device].last_seen
+
+                        const locationDropdown = document.createElement('select');
+                        locationDropdown.classList.add('form-select');
+                        locationDropdown.id = 'locationDropdown' + device;
+                        locationDropdown.addEventListener('change', () => {
+                            fetch('/api/devices/' + device, {
+                                method: 'PUT',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                    location: locationDropdown.value
+                                })
+                            });
+                        });
+                        row.cells[2].appendChild(locationDropdown);
+
+                        const removeButton = document.createElement('button');
+                        removeButton.classList.add('btn', 'btn-danger');
+                        removeButton.textContent = 'Remove';
+                        removeButton.addEventListener('click', () => {
+                            fetch('/api/devices/' + device, {
+                                method: 'DELETE'
+                            });
+                            row.remove();
+                        });
+                        row.insertCell().appendChild(removeButton);
+
+                        //get locations from server config
+                        locations = [];
+                        fetch('/api/config')
+                            .then(response => response.json())
+                            .then(data => {
+                                locations = Object.keys(data.device_config);
+                                console.log(locations);
+                                for (const location of locations) {
+                                    const option = document.createElement('option');
+                                    option.value = location;
+                                    option.textContent = location;
+                                    locationDropdown.appendChild(option);
+                                }
+                            });
                     }
                 });
         </script>

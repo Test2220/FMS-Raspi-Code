@@ -21,6 +21,10 @@ def api_devices():
     data = json.load(json_data)
     return data
 
+@app.route('/api/config/')
+def api_config():
+    return config
+
 # If a client sends a MAC address, check if it is in the json file
 @app.route('/register/<mac>')
 def register(mac):
@@ -62,6 +66,31 @@ def send_config(mac):
             return "Device config not set"
     else:
         return "Device not registered"
+
+# API endpoints for updating device data
+@app.route('/api/devices/<mac>', methods=['DELETE'])
+def remove_device(mac):
+    json_data = open('devices.json')
+    data = json.load(json_data)
+    if mac in data:
+        data.pop(mac)
+        with open('devices.json', 'w') as f:
+            json.dump(data, f)
+        return "Device with MAC address: " + mac + " removed"
+    else:
+        return "Device with MAC address: " + mac + " not found"
+
+@app.route('/api/devices/<mac>', methods=['PUT'])
+def update_device(mac):
+    json_data = open('devices.json')
+    data = json.load(json_data)
+    if mac in data:
+        data[mac] = request.json
+        with open('devices.json', 'w') as f:
+            json.dump(data, f)
+        return "Device with MAC address: " + mac + " updated"
+    else:
+        return "Device with MAC address: " + mac + " not found"
 
 if __name__ == '__main__':
     app.run(debug=True,port=8080)
