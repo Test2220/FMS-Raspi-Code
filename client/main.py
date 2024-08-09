@@ -3,7 +3,7 @@ from uuid import getnode
 from time import sleep
 import json
 import os
-RPi.GPIO as GPIO
+import RPi.GPIO as GPIO
 
 GPIO.setmode(GPIO.BCM)
 
