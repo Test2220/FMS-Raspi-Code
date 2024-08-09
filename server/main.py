@@ -96,7 +96,7 @@ def update_location(mac):
 proc_panel = os.fork()
 
 if proc_panel == 0:
-    app.run(debug=True,port=8080)
+    app.run(debug=True,port=8080, host="0.0.0.0")
     exit()
 
 # Flask app to handle client inputs
