@@ -91,20 +91,22 @@ def update_location(mac):
         return "Location updated for device with MAC address: " + mac
     else:
         return "Device with MAC address: " + mac + " not found"
+    
+app.run(debug=True,port=8080, host="0.0.0.0")
 
-# Spawn a process to run the config program
-proc_panel = os.fork()
+# # Spawn a process to run the config program
+# proc_panel = os.fork()
 
-if proc_panel == 0:
-    app.run(debug=True,port=8080, host="0.0.0.0")
-    exit()
+# if proc_panel == 0:
+#     app.run(debug=True,port=8080, host="0.0.0.0")
+#     exit()
 
-# Flask app to handle client inputs
+# # Flask app to handle client inputs
 
-input_server = Flask(__name__)
+# input_server = Flask(__name__)
 
-@input_server.route('/api/input', methods=['POST'])
-def api_input():
-    data = request.json
-    print(data)
-    return data
+# @input_server.route('/api/input', methods=['POST'])
+# def api_input():
+#     data = request.json
+#     print(data)
+#     return data
