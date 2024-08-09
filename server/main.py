@@ -63,9 +63,9 @@ def send_config(mac):
             device_config = json.load(open(config["device_config"][deviceData[mac]["location"]]))
             return device_config
         else:
-            return "Device config not set"
+            return {"error": "Location not set"}
     else:
-        return "Device not registered"
+        return {"error": "Device not found"}
 
 # API endpoints for updating device data
 @app.route('/api/devices/<mac>', methods=['DELETE'])
@@ -92,5 +92,19 @@ def update_location(mac):
     else:
         return "Device with MAC address: " + mac + " not found"
 
-if __name__ == '__main__':
+# Spawn a process to run the config program
+proc_panel = os.fork()
+
+if proc_panel == 0:
     app.run(debug=True,port=8080)
+    exit()
+
+# Flask app to handle client inputs
+
+input_server = Flask(__name__)
+
+@input_server.route('/api/input', methods=['POST'])
+def api_input():
+    data = request.json
+    print(data)
+    return data

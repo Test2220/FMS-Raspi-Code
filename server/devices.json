@@ -1,1 +1,9 @@
-{"00:00:00:00:00:05": {"location": "Blue"}}
+{
+    "EA:6A:6E:FC:50:EA": {
+        "name": "Device",
+        "ip": "127.0.0.1",
+        "location": "Red",
+        "status": "Not Connected",
+        "last_seen": "Never"
+    }
+}
