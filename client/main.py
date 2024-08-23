@@ -70,7 +70,7 @@ print(config)
 
 def config_pins(config):
     print("Configuring pins...")
-    if "pin1" in config:
+    if "1" in config:
         for pin in config:
             if config[pin] == 1:
                 # Set pin as output
@@ -111,10 +111,10 @@ def exit_handler():
     GPIO.cleanup()
 
 def input_callback(channel):
-    if channel in inputs:
-        print("Input detected on pin " + str(channel))
-         # Send input to server
-        requests.get("http://" + server_ip + ":" + str(control_port) + "/api/devices/input/" + macAddr + "/", json={"pin": channel, "value": GPIO.input(channel)})
+    print("Input detected on pin " + str(channel))
+     # Send input to server
+    requests.get("http://" + server_ip + ":" + str(control_port) + "/api/devices/input/" + macAddr + "/", json={"pin": channel, "value": GPIO.input(channel)})
 
 for pin in inputs:
-    GPIO.add_event_detect(pin, GPIO.BOTH, callback=input_callback)
+    if pin in inputs:
+        GPIO.add_event_detect(pin, GPIO.BOTH, callback=input_callback)
