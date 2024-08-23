@@ -4,6 +4,12 @@ import os
 
 app = Flask(__name__)
 
+#create devices.json if it doesn't exist
+try:
+    open('devices.json', 'x')
+except FileExistsError:
+    pass
+
 json_config = open('config.json')
 config = json.load(json_config)
 
