@@ -74,17 +74,25 @@ def config_pins(config):
         for pin in config:
             if config[pin] == 1:
                 # Set pin as output
-                o_pin = int(pin)
-                GPIO.setup(o_pin, GPIO.OUT)
-                print("Pin " + str(o_pin) + " set as output")
-                inputs.append(o_pin)
+                try:
+                    o_pin = int(pin)
+                    GPIO.setup(o_pin, GPIO.OUT)
+                    print("Pin " + str(o_pin) + " set as output")
+                    inputs.append(o_pin)
+                except Exception as e:
+                    print(e)
+                    print("Pin error: " + str(pin))
                 pass
             elif config[pin] == 2:
                 # Set pin as input
-                i_pin = int(pin)
-                GPIO.setup(i_pin, GPIO.IN)
-                print("Pin " + str(i_pin) + " set as input")
-                outputs.append(i_pin)
+                try:
+                    i_pin = int(pin)
+                    GPIO.setup(i_pin, GPIO.IN)
+                    print("Pin " + str(i_pin) + " set as input")
+                    outputs.append(i_pin)
+                except Exception as e:
+                    print(e)
+                    print("Pin error: " + str(pin))
                 pass
             elif config[pin] == None or config[pin] == 0 or config[pin] == 4 or config[pin] == "none" or config[pin] == "None":
                 # Set pin as none
