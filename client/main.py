@@ -78,7 +78,7 @@ def config_pins(config):
                     o_pin = int(pin)
                     GPIO.setup(o_pin, GPIO.OUT)
                     print("Pin " + str(o_pin) + " set as output")
-                    inputs.append(o_pin)
+                    outputs.append(o_pin)
                 except Exception as e:
                     print(e)
                     print("Pin error: " + str(pin))
@@ -89,7 +89,7 @@ def config_pins(config):
                     i_pin = int(pin)
                     GPIO.setup(i_pin, GPIO.IN)
                     print("Pin " + str(i_pin) + " set as input")
-                    outputs.append(i_pin)
+                    inputs.append(i_pin)
                 except Exception as e:
                     print(e)
                     print("Pin error: " + str(pin))
