@@ -125,4 +125,8 @@ def input_callback(channel):
 
 for pin in inputs:
     if pin in inputs:
-        GPIO.add_event_detect(pin, GPIO.BOTH, callback=input_callback)
+        try :
+            GPIO.add_event_detect(pin, GPIO.BOTH, callback=input_callback)
+        except Exception as e:
+            print(e)
+            print("Error adding event detect for pin " + str(pin))
