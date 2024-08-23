@@ -26,7 +26,7 @@ def register_device(mac):
 
 def get_config(mac):
     response = requests.get("http://" + server_ip + ":" + str(config_port) + "/config/" + mac)
-    print(response.json() + "-----------------")
+    print(str(response.json()) + "-----------------")
     return response.json()
 
 def setup():
