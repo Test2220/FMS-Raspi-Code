@@ -6,7 +6,9 @@ app = Flask(__name__)
 
 #create devices.json if it doesn't exist
 try:
-    open('devices.json', 'x')
+    n_devices = open('devices.json', 'x')
+    n_devices.write("{}")
+    n_devices.close()
 except FileExistsError:
     pass
 
