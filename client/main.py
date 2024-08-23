@@ -7,7 +7,7 @@ import RPi.GPIO as GPIO
 
 GPIO.setmode(GPIO.BCM)
 
-GPIO.setup(17, GPIO.OUT)
+# GPIO.setup(17, GPIO.OUT)
 status_state = ""
 
 server_ip = "10.0.100.21"
