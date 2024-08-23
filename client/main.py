@@ -74,14 +74,14 @@ def config_pins(config):
         for pin in config:
             if config[pin] == 1:
                 # Set pin as output
-                o_pin = int(config[pin])
+                o_pin = int(pin)
                 GPIO.setup(o_pin, GPIO.OUT)
                 print("Pin " + str(o_pin) + " set as output")
                 inputs.append(o_pin)
                 pass
             elif config[pin] == 2:
                 # Set pin as input
-                i_pin = int(config[pin])
+                i_pin = int(pin)
                 GPIO.setup(i_pin, GPIO.IN)
                 print("Pin " + str(i_pin) + " set as input")
                 outputs.append(i_pin)
