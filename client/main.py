@@ -10,7 +10,7 @@ GPIO.setmode(GPIO.BCM)
 GPIO.setup(17, GPIO.OUT)
 status_state = ""
 
-server_ip = "127.0.0.1"
+server_ip = "10.0.100.21"
 config_port = 8080
 control_port = 8007
 
