@@ -87,7 +87,7 @@ def config_pins(config):
                 # Set pin as input
                 try:
                     i_pin = int(pin)
-                    GPIO.setup(i_pin, GPIO.IN)
+                    GPIO.setup(i_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
                     print("Pin " + str(i_pin) + " set as input")
                     inputs.append(i_pin)
                 except Exception as e:
