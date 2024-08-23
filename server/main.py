@@ -92,21 +92,24 @@ def update_location(mac):
     else:
         return "Device with MAC address: " + mac + " not found"
     
+@app.route('/api/devices/input/<mac>/', methods=['PUT'])
+def update_input(mac):
+    json_data = open('devices.json')
+    data = json.load(json_data)
+    if mac in data:
+        try:
+            device_file = open(mac + ".json", "x")
+        except FileExistsError:
+            device_file = open(mac + ".json")
+        current_data = json.load(device_file)
+        if request.json["pin"] in current_data:
+            current_data[request.json["pin"]] = request.json["value"]
+            with open(mac + ".json", 'w') as f:
+                json.dump(current_data, f)
+            return "Input state updated for device with MAC address: " + mac
+        else:
+            current_data.update({request.json["pin"]: request.json["value"]})
+    else:
+        return "Device with MAC address: " + mac + " not found"
+    
 app.run(debug=True,port=8080, host="0.0.0.0")
-
-# # Spawn a process to run the config program
-# proc_panel = os.fork()
-
-# if proc_panel == 0:
-#     app.run(debug=True,port=8080, host="0.0.0.0")
-#     exit()
-
-# # Flask app to handle client inputs
-
-# input_server = Flask(__name__)
-
-# @input_server.route('/api/input', methods=['POST'])
-# def api_input():
-#     data = request.json
-#     print(data)
-#     return data

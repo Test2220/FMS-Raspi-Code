@@ -105,29 +105,16 @@ def attempt_config(i_config):
         sleep(4)
         attempt_config()
 
-# Spawn a process to handle input pins
+attempt_config(config)
 
-proc_input = os.fork()
+def exit_handler():
+    GPIO.cleanup()
 
-if proc_input == 0:
-    print("Input process started")
-    pin_states = {}
-    new_states = {}
-    # Update pin_states with current pin states and send to server if changed
-    while True:
-        for pin in inputs:
-            # new_states[pin] = GPIO.input(pin)
-            pass
-        if new_states == {}:
-            pass
-        elif new_states != pin_states:
-            print("Converting updated pin states to JSON...")
-            # Use the template in templates/input.json to send the new pin states to the server
-            t_inputs = open("templates/input.json")
-            template = json.load(t_inputs)
-            for pin in new_states:
-                template[str(pin)] = new_states[pin]
-            requests.post("http://" + server_ip + ":" + str(control_port) + "/api/input", json=template)
-            pin_states = new_states
-        new_states = {}
-        sleep(0.1)
+def input_callback(channel):
+    if channel in inputs:
+        print("Input detected on pin " + str(channel))
+         # Send input to server
+        requests.get("http://" + server_ip + ":" + str(control_port) + "/api/devices/input/" + macAddr + "/", json={"pin": channel, "value": GPIO.input(channel)})
+
+for pin in inputs:
+    GPIO.add_event_detect(pin, GPIO.BOTH, callback=input_callback)
