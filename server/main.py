@@ -79,6 +79,18 @@ def remove_device(mac):
         return "Device with MAC address: " + mac + " removed"
     else:
         return "Device with MAC address: " + mac + " not found"
+    
+@app.route('/api/devices/<mac>', methods=['PUT'])
+def update_device(mac):
+    json_data = open('devices.json')
+    data = json.load(json_data)
+    if mac in data:
+        data[mac]["location"] = request.json["location"]
+        with open('devices.json', 'w') as f:
+            json.dump(data, f)
+        return "Location updated for device with MAC address: " + mac
+    else:
+        return "Device with MAC address: " + mac + " not found"
 
 @app.route('/api/devices/location/<mac>', methods=['PUT'])
 def update_location(mac):
