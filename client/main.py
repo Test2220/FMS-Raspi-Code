@@ -178,6 +178,7 @@ def poll_pin_states():
     except Exception as e:
         print(e)
         print("Error polling pin states")
+        sleep(4)
 
 output_proc = os.fork()
 
