@@ -4,6 +4,7 @@ from time import sleep
 import json
 import os
 import RPi.GPIO as GPIO
+import signal
 
 GPIO.setmode(GPIO.BCM)
 
@@ -131,3 +132,79 @@ for pin in inputs:
         except Exception as e:
             print(e)
             print("Error adding event detect for pin " + str(pin))
+
+input_proc = os.fork()
+
+if input_proc == 0:
+    signal.signal(signal.SIGINT, exit_handler)
+    signal.pause()
+
+blinking_pins_fast = []
+blinking_pins_slow = []
+output_states = {}
+
+for pin in outputs:
+    output_states[str(pin)] = 0
+
+def control_pin(pin, state):
+    if output_states[str(pin)] == state:
+        return
+    if pin in blinking_pins_fast:
+        blinking_pins_fast.remove(pin)
+    if pin in blinking_pins_slow:
+        blinking_pins_slow.remove(pin)
+    if state == 0:
+        GPIO.output(pin, GPIO.LOW)
+        output_states[str(pin)] = 0
+    elif state == 1:
+        GPIO.output(pin, GPIO.HIGH)
+        output_states[str(pin)] = 1
+    elif state == 2:
+        blinking_pins_slow.append(pin)
+        output_states[str(pin)] = 2
+    elif state == 3:
+        blinking_pins_fast.append(pin)
+        output_states[str(pin)] = 3
+
+def poll_pin_states():
+    try:
+        response = requests.get("http://" + server_ip + ":" + str(control_port) + "/api/devices/output/" + macAddr + "/")
+        if response.status_code == 200:
+            data = response.json()
+            for pin in data:
+                control_pin(pin, data[pin])
+    except Exception as e:
+        print(e)
+        print("Error polling pin states")
+
+output_proc = os.fork()
+
+if output_proc == 0:
+    while True:
+        poll_pin_states()
+
+blink_proc = os.fork()
+
+def blink():
+    iteration = 1
+    while True:
+        if iteration % 2 == 0:
+            for pin in blinking_pins_fast:
+                GPIO.output(pin, GPIO.HIGH)
+        else:
+            for pin in blinking_pins_fast:
+                GPIO.output(pin, GPIO.LOW)
+        if iteration <= 5 == 0:
+            for pin in blinking_pins_slow:
+                GPIO.output(pin, GPIO.HIGH)
+        else:
+            for pin in blinking_pins_slow:
+                GPIO.output(pin, GPIO.LOW)
+        if iteration == 10:
+            iteration = 1
+        else:
+            iteration += 1
+        sleep(0.2)
+
+if blink_proc == 0:
+    blink()
