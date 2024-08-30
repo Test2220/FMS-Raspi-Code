@@ -196,5 +196,36 @@ def update_input(mac):
             current_data.update({request.json["pin"]: request.json["value"]})
     else:
         return "Device with MAC address: " + mac + " not found"
+
+output_device_pins = {}
+def setup_output_pins():
+    #open the devices.json file
+    json_data = open('devices.json')
+
+    #load the JSON data
+    data = json.load(json_data)
+
+    #loop through the data
+    for device in data:
+        if device in output_device_pins:
+            continue
+        output_device_pins[device] = {}
+        device_pins = send_config(device)
+        if "error" in device_pins:
+            continue
+        for pin in device_pins:
+            if device_pins[pin] == 1:
+                output_device_pins[device][pin] = 0
+    return output_device_pins
+setup_output_pins()
+
+@app.route('/api/devices/output/<mac>/', methods=['GET'])
+def get_output(mac):
+    try:
+        device_file = open(mac + ".json")
+    except FileNotFoundError:
+        return {"error": "Device not found"}
+    data = json.load(device_file)
+    return data
     
 app.run(debug=True,port=8080, host="0.0.0.0")
