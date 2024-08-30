@@ -221,11 +221,9 @@ setup_output_pins()
 
 @app.route('/api/devices/output/<mac>/', methods=['GET'])
 def get_output(mac):
-    try:
-        device_file = open(mac + ".json")
-    except FileNotFoundError:
-        return {"error": "Device not found"}
-    data = json.load(device_file)
-    return data
+    if mac in output_device_pins:
+        return output_device_pins[mac]
+    else:
+        return "Device with MAC address: " + mac + " not found"
     
 app.run(debug=True,port=8080, host="0.0.0.0")
