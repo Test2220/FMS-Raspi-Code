@@ -127,6 +127,7 @@ for pin in inputs:
     if pin in inputs:
         try :
             GPIO.add_event_detect(pin, GPIO.RISING, callback=input_callback)
+            print("Event detect added for input pin " + str(pin))
         except Exception as e:
             print(e)
             print("Error adding event detect for pin " + str(pin))
