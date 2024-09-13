@@ -123,7 +123,7 @@ def exit_handler():
 def input_callback(channel):
     print("Input detected on pin " + str(channel))
      # Send input to server
-    requests.get("http://" + server_ip + ":" + str(control_port) + "/api/devices/input/" + macAddr + "/", json={"pin": channel, "value": GPIO.input(channel)})
+    requests.get("http://" + server_ip + ":" + str(config_port) + "/api/devices/input/" + macAddr + "/", json={"pin": channel, "value": GPIO.input(channel)})
 
 for pin in inputs:
     if pin in inputs:
@@ -172,7 +172,7 @@ def control_pin(pin, state):
 
 def poll_pin_states():
     try:
-        req_url = "http://" + server_ip + ":" + str(control_port) + "/api/devices/output/" + macAddr + "/"
+        req_url = "http://" + server_ip + ":" + str(config_port) + "/api/devices/output/" + macAddr + "/"
         print(req_url)
         response = requests.get(req_url)
         if response.status_code == 200:
