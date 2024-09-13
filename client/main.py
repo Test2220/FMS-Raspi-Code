@@ -168,17 +168,17 @@ def control_pin(pin, state):
         blinking_pins_fast.append(pin)
         output_states[str(pin)] = 3
 
-# def poll_pin_states():
-#     try:
-#         response = requests.get("http://" + server_ip + ":" + str(control_port) + "/api/devices/output/" + macAddr + "/")
-#         if response.status_code == 200:
-#             data = response.json()
-#             for pin in data:
-#                 control_pin(pin, data[pin])
-#     except Exception as e:
-#         print(e)
-#         print("Error polling pin states")
-#         sleep(4)
+def poll_pin_states():
+    try:
+        response = requests.get("http://" + server_ip + ":" + str(control_port) + "/api/devices/output/" + macAddr + "/")
+        if response.status_code == 200:
+            data = response.json()
+            for pin in data:
+                control_pin(pin, data[pin])
+    except Exception as e:
+        print(e)
+        print("Error polling pin states")
+        sleep(4)
 
 output_proc = os.fork()
 
