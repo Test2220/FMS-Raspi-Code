@@ -20,6 +20,7 @@ outputs = []
 
 r_mac = getnode()
 macAddr = ':'.join(("%012X" % r_mac)[i:i+2] for i in range(0, 12, 2))
+my_pid = os.getpid()
 
 def register_device(mac):
     response = requests.get("http://" + server_ip + ":" + str(config_port) + "/register/" + mac)
@@ -133,7 +134,8 @@ for pin in inputs:
             print(e)
             print("Error adding event detect for pin " + str(pin))
 
-input_proc = os.fork()
+if os.getpid() == my_pid:
+    input_proc = os.fork()
 
 if input_proc == 0:
     signal.signal(signal.SIGINT, exit_handler)
@@ -180,15 +182,18 @@ def poll_pin_states():
         print("Error polling pin states")
         return 0
 
-output_proc = os.fork()
+if os.getpid() == my_pid:
+    output_proc = os.fork()
 
 if output_proc == 0:
     while True:
         if poll_pin_states() == 0:
             sleep(4)
         sleep(0.1)
+    exit()
 
-blink_proc = os.fork()
+if os.getpid() == my_pid:
+    blink_proc = os.fork()
 
 def blink():
     iteration = 1
@@ -213,3 +218,4 @@ def blink():
 
 if blink_proc == 0:
     blink()
+    exit()
