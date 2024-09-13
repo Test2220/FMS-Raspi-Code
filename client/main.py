@@ -178,13 +178,14 @@ def poll_pin_states():
     except Exception as e:
         print(e)
         print("Error polling pin states")
-        sleep(4)
+        return 0
 
 output_proc = os.fork()
 
 if output_proc == 0:
     while True:
-        # poll_pin_states()
+        if poll_pin_states() == 0:
+            sleep(4)
         sleep(0.1)
 
 blink_proc = os.fork()
