@@ -219,11 +219,62 @@ def setup_output_pins():
     return output_device_pins
 setup_output_pins()
 
+input_device_pins = {}
+def setup_input_pins():
+    #open the devices.json file
+    json_data = open('devices.json')
+
+    #load the JSON data
+    data = json.load(json_data)
+
+    #loop through the data
+    for device in data:
+        if device in input_device_pins:
+            continue
+        input_device_pins[device] = {}
+        device_pins = send_config(device)
+        if "error" in device_pins:
+            continue
+        for pin in device_pins:
+            if device_pins[pin] == 2:
+                input_device_pins[device][pin] = 0
+    return input_device_pins
+setup_input_pins()
+
 @app.route('/api/devices/output/<mac>/', methods=['GET'])
 def get_output(mac):
     if mac in output_device_pins:
         return output_device_pins[mac]
     else:
         return "Device with MAC address: " + mac + " not found"
+    
+def readPin(pin, location):
+    if location in config["device_config"]:
+        device_mac = None
+        for device in output_device_pins:
+            if location in output_device_pins[device]:
+                device_mac = device
+        if device_mac is None:
+            return "No device with location: " + location
+        if pin in input_device_pins[device_mac]:
+            return input_device_pins[device_mac][pin]
+        else:
+            return "Pin not found"
+    else:
+        return "Location not found"
+
+def writePin(pin, location, value):
+    if location in config["device_config"]:
+        device_mac = None
+        for device in output_device_pins:
+            if location in output_device_pins[device]:
+                device_mac = device
+        if device_mac is None:
+            return "No device with location: " + location
+        if pin in output_device_pins[device_mac]:
+            output_device_pins[device_mac][pin] = value
+            return "Pin set"
+        else:
+            return "Pin not found"
     
 app.run(debug=True,port=8080, host="0.0.0.0")

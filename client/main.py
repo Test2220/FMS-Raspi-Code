@@ -173,14 +173,13 @@ def control_pin(pin, state):
 def poll_pin_states():
     try:
         req_url = "http://" + server_ip + ":" + str(config_port) + "/api/devices/output/" + macAddr + "/"
-        print(req_url)
         response = requests.get(req_url)
         if response.status_code == 200:
             data = response.json()
             for pin in data:
                 control_pin(pin, data[pin])
     except Exception as e:
-        print(e)
+        # print(e)
         print("Error polling pin states")
         return 0
 
