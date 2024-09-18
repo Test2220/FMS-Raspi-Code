@@ -264,6 +264,11 @@ def get_output(mac):
     else:
         return "Device with MAC address: " + mac + " not found"
     
+@app.route('/api/devices/outputs/', methods=['GET'])
+def get_outputs():
+    output_device_pins = json.load(open('outputs.json'))
+    return output_device_pins
+    
 def readPin(pin, location):
     if location in config["device_config"]:
         device_mac = None
