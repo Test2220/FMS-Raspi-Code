@@ -310,7 +310,7 @@ if temp_blink == 0:
         sleep(1)
         for device in output_device_pins:
             for pin in output_device_pins[device]:
-                output_device_pins[device][pin] = 1
+                output_device_pins[device][pin] = 0
                 print("Pin " + str(pin) + " set to 0")
         json.dump(output_device_pins, open('outputs.json', 'w'))
         sleep(1)
