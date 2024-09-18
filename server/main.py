@@ -277,9 +277,7 @@ def writePin(pin, location, value):
             return "Pin set"
         else:
             return "Pin not found"
-    
-app.run(debug=True,port=8080, host="0.0.0.0")
-
+        
 temp_blink = os.fork()
 
 if temp_blink == 0:
@@ -287,8 +285,12 @@ if temp_blink == 0:
         for device in output_device_pins:
             for pin in output_device_pins[device]:
                 output_device_pins[device][pin] = 1
+                print("Pin " + str(pin) + " set to 1")
         sleep(1)
         for device in output_device_pins:
             for pin in output_device_pins[device]:
                 output_device_pins[device][pin] = 1
+                print("Pin " + str(pin) + " set to 0")
         sleep(1)
+    
+app.run(debug=True,port=8080, host="0.0.0.0")
