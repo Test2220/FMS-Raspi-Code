@@ -225,27 +225,27 @@ if output_proc == 0:
 if os.getpid() == my_pid:
     blink_proc = os.fork()
 
-def blink():
-    iteration = 1
-    while True:
-        if iteration % 2 == 0:
-            for pin in blinking_pins_fast:
-                GPIO.output(pin, GPIO.HIGH)
-        else:
-            for pin in blinking_pins_fast:
-                GPIO.output(pin, GPIO.LOW)
-        if iteration <= 5 == 0:
-            for pin in blinking_pins_slow:
-                GPIO.output(pin, GPIO.HIGH)
-        else:
-            for pin in blinking_pins_slow:
-                GPIO.output(pin, GPIO.LOW)
-        if iteration == 10:
-            iteration = 1
-        else:
-            iteration += 1
-        sleep(0.2)
+# def blink():
+#     iteration = 1
+#     while True:
+#         if iteration % 2 == 0:
+#             for pin in blinking_pins_fast:
+#                 GPIO.output(pin, GPIO.HIGH)
+#         else:
+#             for pin in blinking_pins_fast:
+#                 GPIO.output(pin, GPIO.LOW)
+#         if iteration <= 5 == 0:
+#             for pin in blinking_pins_slow:
+#                 GPIO.output(pin, GPIO.HIGH)
+#         else:
+#             for pin in blinking_pins_slow:
+#                 GPIO.output(pin, GPIO.LOW)
+#         if iteration == 10:
+#             iteration = 1
+#         else:
+#             iteration += 1
+#         sleep(0.2)
 
-if blink_proc == 0:
-    blink()
-    exit()
+# if blink_proc == 0:
+#     blink()
+#     exit()

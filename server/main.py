@@ -242,8 +242,23 @@ def setup_input_pins():
     return input_device_pins
 setup_input_pins()
 
+try:
+    # Create a new file called devices.json to store device data
+    n_devices = open('outputs.json', 'x')
+
+    # Write an empty JSON object to the file
+    n_devices.write("{}")
+
+    # Close the file
+    n_devices.close()
+except FileExistsError:
+    # If the file already exists, do nothing
+    pass
+
+
 @app.route('/api/devices/output/<mac>/', methods=['GET'])
 def get_output(mac):
+    output_device_pins = json.load(open('outputs.json'))
     if mac in output_device_pins:
         return output_device_pins[mac]
     else:
@@ -286,11 +301,13 @@ if temp_blink == 0:
             for pin in output_device_pins[device]:
                 output_device_pins[device][pin] = 1
                 print("Pin " + str(pin) + " set to 1")
+        json.dump(output_device_pins, open('outputs.json', 'w'))
         sleep(1)
         for device in output_device_pins:
             for pin in output_device_pins[device]:
                 output_device_pins[device][pin] = 1
                 print("Pin " + str(pin) + " set to 0")
+        json.dump(output_device_pins, open('outputs.json', 'w'))
         sleep(1)
     
 app.run(debug=True,port=8080, host="0.0.0.0")
