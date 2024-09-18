@@ -181,7 +181,7 @@ def poll_pin_states():
     except Exception as e:
         # print(e)
         print("Error polling pin states")
-        print(response.text)
+        print(response.json())
         return 0
 
 if os.getpid() == my_pid:
