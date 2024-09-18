@@ -155,11 +155,14 @@ for pin in outputs:
 
 def control_pin(pin, state):
     if output_states[str(pin)] == state:
+        print("Pin " + str(pin) + " already set to state " + str(state))
         return 0
     if pin in blinking_pins_fast:
+        print("Pin " + str(pin) + " already set to blink fast")
         blinking_pins_fast.remove(pin)
         return 0
     if pin in blinking_pins_slow:
+        print("Pin " + str(pin) + " already set to blink slow")
         blinking_pins_slow.remove(pin)
         return 0
     if state == 0:
@@ -180,9 +183,11 @@ def control_pin(pin, state):
         output_states[str(pin)] = 1
     elif state == 2:
         blinking_pins_slow.append(pin)
+        print("Pin " + str(pin) + " set to blink slow")
         output_states[str(pin)] = 2
     elif state == 3:
         blinking_pins_fast.append(pin)
+        print("Pin " + str(pin) + " set to blink fast")
         output_states[str(pin)] = 3
 
 def poll_pin_states():
