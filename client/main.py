@@ -165,6 +165,7 @@ def control_pin(pin, state):
     if state == 0:
         try:
             GPIO.output(pin, GPIO.LOW)
+            print("Pin " + str(pin) + " set to LOW")
         except Exception as e:
             print(e)
             print("Error setting pin " + str(pin) + " to LOW")
@@ -172,6 +173,7 @@ def control_pin(pin, state):
     elif state == 1:
         try:
             GPIO.output(pin, GPIO.HIGH)
+            print("Pin " + str(pin) + " set to HIGH")
         except Exception as e:
             print(e)
             print("Error setting pin " + str(pin) + " to HIGH")
