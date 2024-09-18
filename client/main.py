@@ -155,16 +155,26 @@ for pin in outputs:
 
 def control_pin(pin, state):
     if output_states[str(pin)] == state:
-        return
+        return 0
     if pin in blinking_pins_fast:
         blinking_pins_fast.remove(pin)
+        return 0
     if pin in blinking_pins_slow:
         blinking_pins_slow.remove(pin)
+        return 0
     if state == 0:
-        GPIO.output(pin, GPIO.LOW)
+        try:
+            GPIO.output(pin, GPIO.LOW)
+        except Exception as e:
+            print(e)
+            print("Error setting pin " + str(pin) + " to LOW")
         output_states[str(pin)] = 0
     elif state == 1:
-        GPIO.output(pin, GPIO.HIGH)
+        try:
+            GPIO.output(pin, GPIO.HIGH)
+        except Exception as e:
+            print(e)
+            print("Error setting pin " + str(pin) + " to HIGH")
         output_states[str(pin)] = 1
     elif state == 2:
         blinking_pins_slow.append(pin)
