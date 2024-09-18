@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request
 import json
 import os
+from time import sleep
 
 #create Flask app
 app = Flask(__name__)
@@ -278,3 +279,16 @@ def writePin(pin, location, value):
             return "Pin not found"
     
 app.run(debug=True,port=8080, host="0.0.0.0")
+
+temp_blink = os.fork()
+
+if temp_blink == 0:
+    while True:
+        for device in output_device_pins:
+            for pin in output_device_pins[device]:
+                output_device_pins[device][pin] = 1
+        sleep(1)
+        for device in output_device_pins:
+            for pin in output_device_pins[device]:
+                output_device_pins[device][pin] = 1
+        sleep(1)
