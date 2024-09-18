@@ -194,6 +194,7 @@ def poll_pin_states():
     try:
         req_url = "http://" + server_ip + ":" + str(config_port) + "/api/devices/output/" + macAddr + "/"
         response = requests.get(req_url)
+        print(req_url)
         if response.status_code == 200:
             data = response.json()
             for pin in data:
