@@ -6,6 +6,9 @@ import os
 import RPi.GPIO as GPIO
 import signal
 
+from colorama import init
+from termcolor import colored
+
 GPIO.setmode(GPIO.BCM)
 
 # GPIO.setup(17, GPIO.OUT)
@@ -177,11 +180,15 @@ def poll_pin_states():
         if response.status_code == 200:
             data = response.json()
             for pin in data:
-                control_pin(pin, data[pin])
+                try:
+                    control_pin(pin, data[pin])
+                except Exception as e:
+                    print(e)
+                    print("Error configuring pin state for pin " + str(pin))
+                    return 1
     except Exception as e:
-        # print(e)
+        print(e)
         print("Error polling pin states")
-        print(response.json())
         return 0
 
 if os.getpid() == my_pid:
@@ -191,6 +198,8 @@ if output_proc == 0:
     while True:
         if poll_pin_states() == 0:
             sleep(4)
+        if poll_pin_states() == 1:
+            print(colored("WARNING: A pin could not be configured. Continuing to poll...", "yellow"))
         sleep(0.1)
     exit()
 
