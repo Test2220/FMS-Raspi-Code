@@ -193,6 +193,7 @@ def poll_pin_states():
 
 if os.getpid() == my_pid:
     output_proc = os.fork()
+    print("Output process started")
 
 if output_proc == 0:
     while True:
