@@ -4,7 +4,9 @@
         "ip_fms": "",
 
         "http_port_config": 8080,
-        "http_port_slave": 8007
+        "http_port_slave": 8007,
+    
+        "ip_cheesy-server": ""
     },
 
     "device_config": {

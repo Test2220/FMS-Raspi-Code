@@ -268,6 +268,33 @@ def get_output(mac):
 def get_outputs():
     output_device_pins = json.load(open('outputs.json'))
     return output_device_pins
+
+plcData = ""
+ArenaState = ""
+Arenapoints = ""
+#api call to produce a json of the pinstate.
+@app.route("/api/PLC", methods=['POST','GET'])
+def PLCAPI():
+   error = None
+   global plcData 
+   if request.method == 'POST':
+      plcData = request.get_json(silent=False)
+   return plcData
+@app.route("/api/arena", methods=['POST','GET'])
+def ArenaAPI():
+   error = None
+   global ArenaState 
+   if request.method == 'POST':
+      ArenaState = request.get_json(silent=False)
+   return ArenaState
+
+@app.route("/api/Points", methods=['POST','GET'])
+def ArenapointsAPI():
+   error = None
+   global Arenapoints 
+   if request.method == 'POST':
+      Arenapoints = request.get_json(silent=False)
+   return Arenapoints
     
 def readPin(pin, location):
     if location in config["device_config"]:
@@ -297,7 +324,26 @@ def writePin(pin, location, value):
             return "Pin set"
         else:
             return "Pin not found"
-        
+
+def modifyPoints(redA=0, redT=0, redE=0, blueA=0, blueT=0, blueE=0):
+    global Arenapoints
+    curr_points = {
+        "blueAuto":0,
+        "redAuto":0,
+        "blueTeleop":0,
+        "redTeleop":0,
+        "blueEndgame":0,
+        "redEndgame":0
+    }
+    curr_points["redAuto"] = curr_points["redAuto"] + redA
+    curr_points["redTeleop"] = curr_points["redTeleop"] + redT
+    curr_points["redEndgame"] = curr_points["redEndgame"] + redE
+    curr_points["blueAuto"] = curr_points["blueAuto"] + blueA
+    curr_points["blueTeleop"] = curr_points["blueTeleop"] + blueT
+    curr_points["blueEndgame"] = curr_points["blueEndgame"] + blueE
+    Arenapoints = str(curr_points)
+    return Arenapoints
+
 temp_blink = os.fork()
 
 if temp_blink == 0:
@@ -306,12 +352,14 @@ if temp_blink == 0:
             for pin in output_device_pins[device]:
                 output_device_pins[device][pin] = 1
                 print("Pin " + str(pin) + " set to 1")
+                modifyPoints(1, 1, 1, 1, 1, 1)
         json.dump(output_device_pins, open('outputs.json', 'w'))
         sleep(1)
         for device in output_device_pins:
             for pin in output_device_pins[device]:
                 output_device_pins[device][pin] = 0
                 print("Pin " + str(pin) + " set to 0")
+                modifyPoints(1, 1, 1, 1, 1, 1)
         json.dump(output_device_pins, open('outputs.json', 'w'))
         sleep(1)
     
