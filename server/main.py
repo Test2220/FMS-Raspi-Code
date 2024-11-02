@@ -296,7 +296,9 @@ def ArenapointsAPI():
       Arenapoints = request.get_json(silent=False)
    return Arenapoints
     
-def readPin(pin, location):
+def readPin(pinObj):
+    pin = pinObj["pin"]
+    location = pinObj["location"]
     if location in config["device_config"]:
         device_mac = None
         for device in output_device_pins:
@@ -344,23 +346,42 @@ def modifyPoints(redA=0, redT=0, redE=0, blueA=0, blueT=0, blueE=0):
     Arenapoints = str(curr_points)
     return Arenapoints
 
-temp_blink = os.fork()
+game_code = os.fork()
 
-if temp_blink == 0:
+# ONLY PUT STATIC VARIABLES HERE
+blue_raspi = "blue"
+red_raspi = "red"
+
+blue_amp_pin = 10
+blue_spkr_pin = 11
+
+blue_amp = {"pin": blue_amp_pin, "location": blue_raspi}
+blue_spkr = {"pin": blue_spkr_pin, "location": blue_raspi}
+
+red_amp_pin = 10
+red_spkr_pin = 11
+
+red_amp = {"pin": red_amp_pin, "location": red_raspi}
+red_spkr = {"pin": red_spkr_pin, "location": red_raspi}
+# END OF STATIC VARIABLES
+
+if game_code == 0:
     while True:
-        for device in output_device_pins:
-            for pin in output_device_pins[device]:
-                output_device_pins[device][pin] = 1
-                print("Pin " + str(pin) + " set to 1")
-                modifyPoints(1, 1, 1, 1, 1, 1)
-        json.dump(output_device_pins, open('outputs.json', 'w'))
-        sleep(1)
-        for device in output_device_pins:
-            for pin in output_device_pins[device]:
-                output_device_pins[device][pin] = 0
-                print("Pin " + str(pin) + " set to 0")
-                modifyPoints(1, 1, 1, 1, 1, 1)
-        json.dump(output_device_pins, open('outputs.json', 'w'))
-        sleep(1)
+        # PUT GAME PERIODIC CODE HERE
+        blue_amp_state = readPin(blue_amp)
+        blue_spkr_state = readPin(blue_spkr)
+
+        red_amp_state = readPin(red_amp)
+        red_spkr_state = readPin(red_spkr)
+
+        if blue_amp_state == 1:
+            modifyPoints(blueA=1)
+        if blue_spkr_state == 1:
+            modifyPoints(blueA=2)
+        if red_amp_state == 1:
+            modifyPoints(redA=1)
+        if red_spkr_state == 1:
+            modifyPoints(redA=2)
+        # END OF GAME PERIODIC CODE
     
 app.run(debug=True,port=8080, host="0.0.0.0")
