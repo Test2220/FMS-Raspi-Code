@@ -2,6 +2,7 @@ from flask import Flask, render_template, request
 import json
 import os
 from time import sleep
+import requests
 
 #create Flask app
 app = Flask(__name__)
@@ -178,7 +179,7 @@ def update_location(mac):
     else:
         return "Device with MAC address: " + mac + " not found"
     
-@app.route('/api/devices/input/<mac>/', methods=['PUT'])
+@app.route('/api/devices/input/<mac>/', methods=['POST'])
 def update_input(mac):
     json_data = open('devices.json')
     data = json.load(json_data)
@@ -269,6 +270,15 @@ def get_outputs():
     output_device_pins = json.load(open('outputs.json'))
     return output_device_pins
 
+@app.route('/api/devices/input/<mac>/', methods=['GET'])
+def get_input(mac):
+    input_device_pins = json.load(open('inputs.json'))
+    if mac in input_device_pins:
+        return input_device_pins[mac]
+    else:
+        return "Device with MAC address: " + mac + " not found"
+
+
 plcData = ""
 ArenaState = ""
 Arenapoints = ""
@@ -299,17 +309,10 @@ def ArenapointsAPI():
 def readPin(pinObj):
     pin = pinObj["pin"]
     location = pinObj["location"]
-    if location in config["device_config"]:
-        device_mac = None
-        for device in input_device_pins:
-            if location in input_device_pins[device]:
-                device_mac = device
-        if device_mac is None:
-            return "No device with location: " + location
-        if pin in input_device_pins[device_mac]:
-            return input_device_pins[device_mac][pin]
-        else:
-            return "Pin not found"
+    # make a request to my own api to get the pin state
+    pin_state = requests.get("http://localhost:8080/api/devices/input/" + location + "/")
+    return pin_state
+
 
 def writePin(pin, location, value):
     if location in config["device_config"]:
