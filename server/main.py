@@ -301,8 +301,8 @@ def readPin(pinObj):
     location = pinObj["location"]
     if location in config["device_config"]:
         device_mac = None
-        for device in output_device_pins:
-            if location in output_device_pins[device]:
+        for device in input_device_pins:
+            if location in input_device_pins[device]:
                 device_mac = device
         if device_mac is None:
             return "No device with location: " + location
@@ -310,8 +310,6 @@ def readPin(pinObj):
             return input_device_pins[device_mac][pin]
         else:
             return "Pin not found"
-    else:
-        return "Location not found"
 
 def writePin(pin, location, value):
     if location in config["device_config"]:
@@ -348,7 +346,7 @@ def modifyPoints(redA=0, redT=0, redE=0, blueA=0, blueT=0, blueE=0):
 
 game_code = os.fork()
 
-# ONLY PUT STATIC VARIABLES HERE
+# ----ONLY PUT STATIC VARIABLES HERE----
 blue_raspi = "blue"
 red_raspi = "red"
 
@@ -363,25 +361,31 @@ red_spkr_pin = 11
 
 red_amp = {"pin": red_amp_pin, "location": red_raspi}
 red_spkr = {"pin": red_spkr_pin, "location": red_raspi}
-# END OF STATIC VARIABLES
+# ----END OF STATIC VARIABLES----
 
 if game_code == 0:
     while True:
-        # PUT GAME PERIODIC CODE HERE
-        blue_amp_state = readPin(blue_amp)
-        blue_spkr_state = readPin(blue_spkr)
+        # ----PUT GAME PERIODIC CODE HERE----
 
-        red_amp_state = readPin(red_amp)
-        red_spkr_state = readPin(red_spkr)
+        # blue_amp_state = readPin(blue_amp)
+        # blue_spkr_state = readPin(blue_spkr)
 
-        if blue_amp_state == 1:
-            modifyPoints(blueA=1)
-        if blue_spkr_state == 1:
-            modifyPoints(blueA=2)
-        if red_amp_state == 1:
-            modifyPoints(redA=1)
-        if red_spkr_state == 1:
-            modifyPoints(redA=2)
-        # END OF GAME PERIODIC CODE
+        # red_amp_state = readPin(red_amp)
+        # red_spkr_state = readPin(red_spkr)
+
+        # if blue_amp_state == 1:
+        #     modifyPoints(blueA=1)
+        # if blue_spkr_state == 1:
+        #     modifyPoints(blueA=2)
+        # if red_amp_state == 1:
+        #     modifyPoints(redA=1)
+        # if red_spkr_state == 1:
+        #     modifyPoints(redA=2)
+        # blink pin 3 on blue raspi
+
+        print(readPin(blue_amp))
+
+        # ----END OF GAME PERIODIC CODE----
+        sleep(0.1)
     
 app.run(debug=True,port=8080, host="0.0.0.0")
