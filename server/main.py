@@ -272,7 +272,6 @@ def get_outputs():
 
 @app.route('/api/devices/input/<mac>/', methods=['GET'])
 def get_input(mac):
-    input_device_pins = json.load(open('inputs.json'))
     if mac in input_device_pins:
         return input_device_pins[mac]
     else:
