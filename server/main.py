@@ -277,10 +277,8 @@ def get_input(mac):
     else:
         return "Device with MAC address: " + mac + " not found"
 
-
 plcData = ""
 ArenaState = ""
-Arenapoints = ""
 #api call to produce a json of the pinstate.
 @app.route("/api/PLC", methods=['POST','GET'])
 def PLCAPI():
@@ -296,14 +294,6 @@ def ArenaAPI():
    if request.method == 'POST':
       ArenaState = request.get_json(silent=False)
    return ArenaState
-
-@app.route("/api/Points", methods=['POST','GET'])
-def ArenapointsAPI():
-   error = None
-   global Arenapoints 
-   if request.method == 'POST':
-      Arenapoints = request.get_json(silent=False)
-   return Arenapoints
     
 def readPin(pinObj):
     pin = pinObj["pin"]
@@ -328,23 +318,23 @@ def writePin(pin, location, value):
             return "Pin not found"
 
 def modifyPoints(redA=0, redT=0, redE=0, blueA=0, blueT=0, blueE=0):
-    global Arenapoints
-    curr_points = {
-        "blueAuto":0,
-        "redAuto":0,
-        "blueTeleop":0,
-        "redTeleop":0,
-        "blueEndgame":0,
-        "redEndgame":0
-    }
-    curr_points["redAuto"] = curr_points["redAuto"] + redA
-    curr_points["redTeleop"] = curr_points["redTeleop"] + redT
-    curr_points["redEndgame"] = curr_points["redEndgame"] + redE
-    curr_points["blueAuto"] = curr_points["blueAuto"] + blueA
-    curr_points["blueTeleop"] = curr_points["blueTeleop"] + blueT
-    curr_points["blueEndgame"] = curr_points["blueEndgame"] + blueE
-    Arenapoints = str(curr_points)
-    return Arenapoints
+    request_type = "PATCH"
+    request_url = "http://172.16.20.5:8080/api/scores"
+    request_data = {}
+    if redA != 0:
+        request_data["redA"] = redA
+    if redT != 0:
+        request_data["redT"] = redT
+    if redE != 0:
+        request_data["redE"] = redE
+    if blueA != 0:
+        request_data["blueA"] = blueA
+    if blueT != 0:
+        request_data["blueT"] = blueT
+    if blueE != 0:
+        request_data["blueE"] = blueE
+    requests.request(request_type, request_url, json=request_data)
+
 
 game_code = os.fork()
 
@@ -383,7 +373,6 @@ if game_code == 0:
         #     modifyPoints(redA=1)
         # if red_spkr_state == 1:
         #     modifyPoints(redA=2)
-        # blink pin 3 on blue raspi
 
         print(readPin(blue_amp))
 
