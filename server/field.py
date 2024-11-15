@@ -14,5 +14,23 @@ import requests
 #         else:
 #             return "Pin not found"
         
+url = "http://localhost:8080/"
+
+locations_raw = requests.get("url" + "api/locations/")
+locations = locations_raw.json()
+
+devices_raw = requests.get("url" + "api/devices/")
+devices = devices_raw.json()
+
 def writePin(pin, location, value):
-    locations = requests.get()
+    device = None
+    for dev in devices:
+        if dev["location"] == location:
+            device = dev
+    if device is None:
+        return "No device with location: " + location
+    if pin in device["pins"]:
+        requests.patch
+        return "Pin set"
+    else:
+        return "Pin not found"
