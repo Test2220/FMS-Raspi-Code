@@ -10,7 +10,7 @@
     },
 
     "device_config": {
-        "red": "pin-config.json",
-        "blue": "pin-config.json"
+        "Red": "pin-config.json",
+        "Blue": "pin-config.json"
     }
 }
