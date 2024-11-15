@@ -392,8 +392,6 @@ def modifyPoints(redA=0, redT=0, redE=0, blueA=0, blueT=0, blueE=0):
         request_data["blueE"] = blueE
     requests.request(request_type, request_url, json=request_data)
 
-game_code_pid = os.fork()
-
 # ----ONLY PUT STATIC VARIABLES HERE----
 blue_raspi = "blue"
 red_raspi = "red"
@@ -410,6 +408,8 @@ red_spkr_pin = 11
 red_amp = {"pin": red_amp_pin, "location": red_raspi}
 red_spkr = {"pin": red_spkr_pin, "location": red_raspi}
 # ----END OF STATIC VARIABLES----
+
+game_code_pid = os.fork()
 
 if game_code_pid == 0:
     while True:
@@ -435,4 +435,5 @@ if game_code_pid == 0:
         # ----END OF GAME PERIODIC CODE----
         sleep(0.1)
     
-app.run(debug=True,port=8080, host="0.0.0.0")
+if __name__ == "__main__":
+    app.run(debug=True,port=8080, host="0.0.0.0")
