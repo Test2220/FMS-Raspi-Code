@@ -135,7 +135,7 @@ for pin in inputs:
             print("Event detect added for input pin " + str(pin))
         except Exception as e:
             print(e)
-            print("Error adding event detect for pin " + str(pin))
+            print(colored("ERROR: Could not add event detect for pin " + str(pin), "red"))
 
 if os.getpid() == my_pid:
     input_proc = os.fork()
@@ -194,7 +194,7 @@ def poll_pin_states():
     try:
         req_url = "http://" + server_ip + ":" + str(config_port) + "/api/devices/output/" + macAddr + "/"
         response = requests.get(req_url)
-        print(req_url)
+        # print(req_url)
         if response.status_code == 200:
             data = response.json()
             for pin in data:
@@ -202,7 +202,7 @@ def poll_pin_states():
                     control_pin(pin, data[pin])
                 except Exception as e:
                     print(e)
-                    print("Error configuring pin state for pin " + str(pin))
+                    print(colored("ERROR: Could not configure pin state for pin " + str(pin), "red"))
                     return 1
     except Exception as e:
         print(e)
