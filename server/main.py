@@ -409,8 +409,7 @@ red_amp = {"pin": red_amp_pin, "location": red_raspi}
 red_spkr = {"pin": red_spkr_pin, "location": red_raspi}
 # ----END OF STATIC VARIABLES----
 
-# game_code_pid = os.fork()
-game_code_pid = 1
+game_code_pid = os.fork()
 
 if game_code_pid == 0:
     while True:
@@ -436,6 +435,5 @@ if game_code_pid == 0:
         # ----END OF GAME PERIODIC CODE----
         sleep(0.1)
     
-if __name__ == "__main__":
-    # app.run(debug=True,port=8080, host="0.0.0.0")
-    pass
+if game_code_pid != 0:
+    app.run(debug=True,port=8080, host="0.0.0.0")
