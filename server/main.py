@@ -272,10 +272,17 @@ def get_outputs():
     output_device_pins = json.load(open('outputs.json'))
     return output_device_pins
 
-@app.route('/api/devices/input/<mac>/', methods=['GET'])
+@app.route('/api/devices/input/<mac>/', methods=['GET', 'PATCH'])
 def get_input(mac):
     if mac in input_device_pins:
-        return input_device_pins[mac]
+        if request.method == 'PATCH':
+            pin = request.json["pin"]
+            value = request.json["value"]
+            if pin in input_device_pins[mac]:
+                input_device_pins[mac][pin] = value
+            return "Input state updated for device with MAC address: " + mac
+        else:
+            return input_device_pins[mac]
     else:
         return "Device with MAC address: " + mac + " not found"
 

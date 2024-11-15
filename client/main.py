@@ -1,10 +1,7 @@
-import requests
 from uuid import getnode
 from time import sleep
-import json
-import os
+import json, os, signal, requests
 import RPi.GPIO as GPIO
-import signal
 
 from colorama import init
 from termcolor import colored
@@ -126,7 +123,7 @@ def exit_handler():
 def input_callback(channel):
     print("Input detected on pin " + str(channel))
      # Send input to server
-    requests.get("http://" + server_ip + ":" + str(config_port) + "/api/devices/input/" + macAddr + "/", json={"pin": channel, "value": GPIO.input(channel)})
+    requests.patch("http://" + server_ip + ":" + str(config_port) + "/api/devices/input/" + macAddr + "/", json={"pin": channel, "value": GPIO.input(channel)})
 
 for pin in inputs:
     if pin in inputs:
