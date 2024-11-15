@@ -390,8 +390,8 @@ def modifyPoints(redA=0, redT=0, redE=0, blueA=0, blueT=0, blueE=0):
         request_data["blueE"] = blueE
     requests.request(request_type, request_url, json=request_data)
 
-
-game_code = os.fork()
+if __name__ == '__main__':
+    game_code = os.fork()
 
 # ----ONLY PUT STATIC VARIABLES HERE----
 blue_raspi = "blue"
