@@ -1,6 +1,38 @@
 from flask import Flask, render_template, request
-import json, os, requests, logging
+import json, os, requests, logging, sys
 from time import sleep
+from multiprocessing import Queue
+from threading import Thread
+
+# make a shared queue all processes can share
+log_queue = Queue()
+
+def printer():
+    '''printer job running in parent process to actually print'''
+    global log_queue
+    while True:
+        a, k=log_queue.get()
+        print(*a, **k)
+
+# make a thread to run printer to keep it in pid 1
+Thread(target=printer).start()
+
+# make a universal function all processes can log to
+def mp_print(*a,**k):
+    '''redirects print to pid 1's stdout'''
+    global log_queue
+    log_queue.put((a, k))
+    
+def mp_print_debug(*a, **k):
+    ''' mp_print with pid info already cooked in '''
+    mp_print(
+        'pid={} ppid={}'.format(
+            os.getpid(),
+            os.getppid()
+        ),
+        *a,
+        **k
+    )
 
 log = logging.getLogger('werkzeug')
 log.setLevel(logging.WARNING)
@@ -285,6 +317,19 @@ def get_input(mac):
         else:
             return input_device_pins[mac]
     else:
+        # if a location is given instead of a mac address
+        if mac in config["device_config"]:
+            location = mac
+            devices_file = requests.get("http://localhost:8080/api/devices")
+            devices = devices_file.json()
+            device_mac = None
+            for device in devices:
+                if devices[device]["location"] == location:
+                    device_mac = device
+                    return get_input(device_mac)
+            if device_mac is None:
+                return "No device with location: " + mac
+            return input_device_pins[device_mac]
         return "Device with MAC address: " + mac + " not found"
 
 plcData = ""
@@ -384,7 +429,7 @@ if game_code == 0:
         # if red_spkr_state == 1:
         #     modifyPoints(redA=2)
 
-        print(readPin(blue_amp))
+        mp_print_debug("Game periodic code running")
 
         # ----END OF GAME PERIODIC CODE----
         sleep(0.1)
