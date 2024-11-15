@@ -1,9 +1,11 @@
 from flask import Flask, render_template, request
-import json
-import os
+import json, os, requests, logging
 from time import sleep
-import requests
 
+log = logging.getLogger('werkzeug')
+log.setLevel(logging.WARNING)
+
+log.warning("This is a warning")
 #create Flask app
 app = Flask(__name__)
 
