@@ -409,7 +409,8 @@ red_amp = {"pin": red_amp_pin, "location": red_raspi}
 red_spkr = {"pin": red_spkr_pin, "location": red_raspi}
 # ----END OF STATIC VARIABLES----
 
-game_code_pid = os.fork()
+# game_code_pid = os.fork()
+game_code_pid = 1
 
 if game_code_pid == 0:
     while True:
