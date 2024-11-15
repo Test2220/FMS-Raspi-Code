@@ -277,7 +277,7 @@ def get_input(mac):
     if mac in input_device_pins:
         if request.method == 'PATCH':
             print(input_device_pins)
-            pin = request.json["pin"]
+            pin = str(request.json["pin"])
             value = request.json["value"]
             if pin in input_device_pins[mac]:
                 input_device_pins[mac][pin] = value
