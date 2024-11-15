@@ -4,6 +4,8 @@ from time import sleep
 from multiprocessing import Queue
 from threading import Thread
 
+parent_pid = os.getpid()
+
 # make a shared queue all processes can share
 log_queue = Queue()
 
@@ -390,8 +392,7 @@ def modifyPoints(redA=0, redT=0, redE=0, blueA=0, blueT=0, blueE=0):
         request_data["blueE"] = blueE
     requests.request(request_type, request_url, json=request_data)
 
-if __name__ == '__main__':
-    game_code = os.fork()
+game_code = os.fork()
 
 # ----ONLY PUT STATIC VARIABLES HERE----
 blue_raspi = "blue"
