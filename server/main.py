@@ -4,7 +4,7 @@ from time import sleep
 from multiprocessing import Queue
 from threading import Thread
 
-parent_pid = os.getpid()
+parent_lock = 1
 
 # make a shared queue all processes can share
 log_queue = Queue()
@@ -81,6 +81,16 @@ def api_devices():
     json_data = open('devices.json')
     data = json.load(json_data)
     return data
+
+@app.route('/api/locations')
+def api_locations():
+    json_data = open('devices.json')
+    data = json.load(json_data)
+    locations = []
+    for device in data:
+        if data[device]["location"] not in locations:
+            locations.append(data[device]["location"])
+    return locations
 
 # Define the config route
 # This is used by the web interface to get the config data,
@@ -360,80 +370,4 @@ def readPin(pinObj):
     return pin_state
 
 
-def writePin(pin, location, value):
-    if location in config["device_config"]:
-        device_mac = None
-        for device in output_device_pins:
-            if location in output_device_pins[device]:
-                device_mac = device
-        if device_mac is None:
-            return "No device with location: " + location
-        if pin in output_device_pins[device_mac]:
-            output_device_pins[device_mac][pin] = value
-            return "Pin set"
-        else:
-            return "Pin not found"
-
-def modifyPoints(redA=0, redT=0, redE=0, blueA=0, blueT=0, blueE=0):
-    request_type = "PATCH"
-    request_url = "http://172.16.20.5:8080/api/scores"
-    request_data = {}
-    if redA != 0:
-        request_data["redA"] = redA
-    if redT != 0:
-        request_data["redT"] = redT
-    if redE != 0:
-        request_data["redE"] = redE
-    if blueA != 0:
-        request_data["blueA"] = blueA
-    if blueT != 0:
-        request_data["blueT"] = blueT
-    if blueE != 0:
-        request_data["blueE"] = blueE
-    requests.request(request_type, request_url, json=request_data)
-
-# ----ONLY PUT STATIC VARIABLES HERE----
-blue_raspi = "blue"
-red_raspi = "red"
-
-blue_amp_pin = 10
-blue_spkr_pin = 11
-
-blue_amp = {"pin": blue_amp_pin, "location": blue_raspi}
-blue_spkr = {"pin": blue_spkr_pin, "location": blue_raspi}
-
-red_amp_pin = 10
-red_spkr_pin = 11
-
-red_amp = {"pin": red_amp_pin, "location": red_raspi}
-red_spkr = {"pin": red_spkr_pin, "location": red_raspi}
-# ----END OF STATIC VARIABLES----
-
-game_code_pid = os.fork()
-
-if game_code_pid == 0:
-    while True:
-        # ----PUT GAME PERIODIC CODE HERE----
-
-        # blue_amp_state = readPin(blue_amp)
-        # blue_spkr_state = readPin(blue_spkr)
-
-        # red_amp_state = readPin(red_amp)
-        # red_spkr_state = readPin(red_spkr)
-
-        # if blue_amp_state == 1:
-        #     modifyPoints(blueA=1)
-        # if blue_spkr_state == 1:
-        #     modifyPoints(blueA=2)
-        # if red_amp_state == 1:
-        #     modifyPoints(redA=1)
-        # if red_spkr_state == 1:
-        #     modifyPoints(redA=2)
-
-        mp_print_debug("Game periodic code running")
-
-        # ----END OF GAME PERIODIC CODE----
-        sleep(0.1)
-    
-if game_code_pid != 0:
-    app.run(debug=True,port=8080, host="0.0.0.0")
+app.run(debug=True,port=8080, host="0.0.0.0")
