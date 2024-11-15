@@ -137,15 +137,6 @@ for pin in inputs:
             print(e)
             print(colored("ERROR: Could not add event detect for pin " + str(pin), "red"))
 
-if os.getpid() == my_pid:
-    input_proc = os.fork()
-
-if input_proc == 0:
-    signal.signal(signal.SIGINT, exit_handler)
-    signal.pause()
-
-
-
 blinking_pins_fast = []
 blinking_pins_slow = []
 output_states = {}
@@ -223,7 +214,11 @@ if output_proc == 0:
     exit()
 
 if os.getpid() == my_pid:
-    blink_proc = os.fork()
+    signal.signal(signal.SIGINT, exit_handler)
+    signal.pause()
+
+# if os.getpid() == my_pid:
+#     blink_proc = os.fork()
 
 # def blink():
 #     iteration = 1
