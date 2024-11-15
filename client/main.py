@@ -124,6 +124,7 @@ def input_callback(channel):
     print("Input detected on pin " + str(channel))
      # Send input to server
     requests.patch("http://" + server_ip + ":" + str(config_port) + "/api/devices/input/" + macAddr + "/", json={"pin": channel, "value": GPIO.input(channel)})
+    print("Input on pin " + str(channel) + " and value " + str(GPIO.input(channel)) + " sent to server")
 
 for pin in inputs:
     if pin in inputs:
