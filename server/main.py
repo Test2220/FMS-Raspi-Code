@@ -392,7 +392,7 @@ def modifyPoints(redA=0, redT=0, redE=0, blueA=0, blueT=0, blueE=0):
         request_data["blueE"] = blueE
     requests.request(request_type, request_url, json=request_data)
 
-game_code = os.fork()
+game_code_pid = os.fork()
 
 # ----ONLY PUT STATIC VARIABLES HERE----
 blue_raspi = "blue"
@@ -411,7 +411,7 @@ red_amp = {"pin": red_amp_pin, "location": red_raspi}
 red_spkr = {"pin": red_spkr_pin, "location": red_raspi}
 # ----END OF STATIC VARIABLES----
 
-if game_code == 0:
+if game_code_pid == 0:
     while True:
         # ----PUT GAME PERIODIC CODE HERE----
 
