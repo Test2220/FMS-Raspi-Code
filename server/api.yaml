@@ -1,0 +1,326 @@
+openapi: 3.0.0
+info:
+  title: Device Management API
+  version: 1.0.0
+  description: API for managing devices, their configurations, and states.
+
+servers:
+  - url: http://localhost:8080
+    description: Local server
+
+paths:
+  /api/devices:
+    get:
+      summary: Get all devices
+      responses:
+        '200':
+          description: A JSON object containing all devices
+          content:
+            application/json:
+              example:
+                {
+                  "device1": {
+                    "name": "Device 1",
+                    "ip": "192.168.1.2",
+                    "location": "Red",
+                    "status": "Connected",
+                    "last_seen": "2023-10-01T12:00:00Z"
+                  },
+                  "device2": {
+                    "name": "Device 2",
+                    "ip": "192.168.1.3",
+                    "location": "Blue",
+                    "status": "Not Connected",
+                    "last_seen": "Never"
+                  }
+                }
+
+  /api/locations:
+    get:
+      summary: Get all unique device locations
+      responses:
+        '200':
+          description: A JSON array containing all unique device locations
+          content:
+            application/json:
+              example: ["Red", "Blue"]
+
+  /api/config:
+    get:
+      summary: Get configuration data
+      responses:
+        '200':
+          description: A JSON object containing configuration data
+          content:
+            application/json:
+              example:
+                {
+                  "device_config": {
+                    "Red": "pin-config.json",
+                    "Blue": "blue-config.json"
+                  }
+                }
+
+  /register/{mac}:
+    get:
+      summary: Register a device by MAC address
+      parameters:
+        - in: path
+          name: mac
+          required: true
+          schema:
+            type: string
+          description: MAC address of the device
+      responses:
+        '200':
+          description: Registration status message
+          content:
+            text/plain:
+              example: "Registered IP address: 192.168.1.2 for MAC address: 00:1A:2B:3C:4D:5E"
+
+  /config/{mac}:
+    get:
+      summary: Get device configuration by MAC address
+      parameters:
+        - in: path
+          name: mac
+          required: true
+          schema:
+            type: string
+          description: MAC address of the device
+      responses:
+        '200':
+          description: Device configuration or error message
+          content:
+            application/json:
+              examples:
+                success:
+                  value:
+                    {
+                      "pin1": 1,
+                      "pin2": 0
+                    }
+                error:
+                  value:
+                    {
+                      "error": "Device not found"
+                    }
+
+  /api/devices/{mac}:
+    delete:
+      summary: Remove a device by MAC address
+      parameters:
+        - in: path
+          name: mac
+          required: true
+          schema:
+            type: string
+          description: MAC address of the device
+      responses:
+        '200':
+          description: Removal status message
+          content:
+            text/plain:
+              example: "Device with MAC address: 00:1A:2B:3C:4D:5E removed"
+    put:
+      summary: Update device location by MAC address
+      parameters:
+        - in: path
+          name: mac
+          required: true
+          schema:
+            type: string
+          description: MAC address of the device
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                location:
+                  type: string
+                  example: "Living Room"
+      responses:
+        '200':
+          description: Update status message
+          content:
+            text/plain:
+              example: "Location updated for device with MAC address: 00:1A:2B:3C:4D:5E"
+
+  /api/devices/location/{mac}:
+    put:
+      summary: Update device location by MAC address
+      parameters:
+        - in: path
+          name: mac
+          required: true
+          schema:
+            type: string
+          description: MAC address of the device
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                location:
+                  type: string
+                  example: "Living Room"
+      responses:
+        '200':
+          description: Update status message
+          content:
+            text/plain:
+              example: "Location updated for device with MAC address: 00:1A:2B:3C:4D:5E"
+
+  /api/devices/input/{mac}/:
+    post:
+      summary: Update device input state by MAC address
+      parameters:
+        - in: path
+          name: mac
+          required: true
+          schema:
+            type: string
+          description: MAC address of the device
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                pin:
+                  type: string
+                  example: "pin1"
+                value:
+                  type: integer
+                  example: 1
+      responses:
+        '200':
+          description: Update status message
+          content:
+            text/plain:
+              example: "Input state updated for device with MAC address: 00:1A:2B:3C:4D:5E"
+
+  /api/devices/output/{mac}/:
+    get:
+      summary: Get device output state by MAC address
+      parameters:
+        - in: path
+          name: mac
+          required: true
+          schema:
+            type: string
+          description: MAC address of the device
+      responses:
+        '200':
+          description: Device output state or error message
+          content:
+            application/json:
+              examples:
+                success:
+                  value:
+                    {
+                      "pin1": 1,
+                      "pin2": 0
+                    }
+                error:
+                  value:
+                    {
+                      "error": "Device with MAC address: 00:1A:2B:3C:4D:5E not found"
+                    }
+
+  /api/devices/outputs/:
+    get:
+      summary: Get all device output states
+      responses:
+        '200':
+          description: A JSON object containing all device output states
+          content:
+            application/json:
+              example:
+                {
+                  "device1": {
+                    "pin1": 1,
+                    "pin2": 0
+                  },
+                  "device2": {
+                    "pin1": 0,
+                    "pin2": 1
+                  }
+                }
+
+  /api/PLC:
+    get:
+      summary: Get PLC data
+      responses:
+        '200':
+          description: A JSON object containing PLC data
+          content:
+            application/json:
+              example:
+                {
+                  "plcData": {
+                    "pin1": 1,
+                    "pin2": 0
+                  }
+                }
+    post:
+      summary: Update PLC data
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                {
+                  "plcData": {
+                    "pin1": 1,
+                    "pin2": 0
+                  }
+                }
+      responses:
+        '200':
+          description: Update status message
+          content:
+            text/plain:
+              example: "PLC data updated"
+
+  /api/arena:
+    get:
+      summary: Get arena state
+      responses:
+        '200':
+          description: A JSON object containing arena state
+          content:
+            application/json:
+              example:
+                {
+                  "ArenaState": {
+                    "state": "active"
+                  }
+                }
+    post:
+      summary: Update arena state
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                {
+                  "ArenaState": {
+                    "state": "active"
+                  }
+                }
+      responses:
+        '200':
+          description: Update status message
+          content:
+            text/plain:
+              example: "Arena state updated"
